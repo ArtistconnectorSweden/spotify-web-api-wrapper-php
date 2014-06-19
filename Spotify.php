@@ -275,7 +275,7 @@ class Spotify {
             throw new Exception("Error. Code was " . curl_errno($ch) . ' ' . $result . ' ' . $response);
         }
         $data = json_decode($response, TRUE);
-        echo ($response);
+ 
         return $data;
         
     }
