@@ -107,7 +107,7 @@ class Spotify {
     /**
      * Search
      */
-    public function search($q, $type,  $limit = 10, $offset = 10) {
+    public function search($q, $type,  $limit = 10, $offset = 0) {
         $data = $this->request('GET', SPOTIFY_API_ENDPOINT, '/search?q=' . urlencode($q) . '&' . ($type ? 'type=' . implode(',', $type) : '') . 'limit=' . $limit . '&offset=' . $offset);
         
     }
