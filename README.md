@@ -46,9 +46,9 @@ Let say you created a callback.php in the same directory as the login.php, just 
     
     // Store the refresh token and access token in your database
     $access_token = $token['access_token'];
-    $refresh_token = $token['refresh_token];
+    $refresh_token = $token['refresh_token'];
     // Then 'install' the token into the class instance
-    $spotifyApi->authorize($token['access_token']);
+    $spotifyApi->authenticate($token['access_token']);
     ?>
     
 
