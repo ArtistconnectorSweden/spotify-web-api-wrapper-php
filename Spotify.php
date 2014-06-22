@@ -55,7 +55,7 @@ class Spotify {
     
     public function refreshToken($refreshToken) {
         $code = $_GET['code']; // Get the code
-        $state = $_GET['state']; // Get the state
+        $state = isset($_GET['state']) ? $_GET['state'] : NULL;// Get the code
         $error = isset($_GET['error']) ? $_GET['error'] : NULL;
         if ($error) {
             throw new Exception (urldecode($error));
@@ -295,7 +295,7 @@ class Spotify {
      */
     public function requestToken() {
         $code = $_GET['code']; // Get the code
-        $state = $_GET['state']; // Get the state
+        $state = isset($_GET['state']) ? $_GET['state'] : NULL; // Get the state
         $error = isset($_GET['error']) ? $_GET['error'] : NULL;
         if ($error) {
             throw new Exception (urldecode($error));
