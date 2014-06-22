@@ -229,7 +229,7 @@ class Spotify {
         }
         if ($method && $method != 'GET') {
             
-            if ($method == $POST) {
+            if ($method == 'POST') {
                 
                 
             } else {
