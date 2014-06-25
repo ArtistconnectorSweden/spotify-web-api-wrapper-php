@@ -176,11 +176,11 @@ class Spotify {
      * @param {String} $uri The Spotify URI to the playlist
      * @return Array an array of tracks
      */
-    public function getTracksInPlaylist($uri) {
+    public function getTracksInPlaylist($uri, $offset = 0) {
         $parts = explode(':', $uri);
         $user = $parts[2];
         $playlist = $parts[4];
-        $data = $this->request('GET', SPOTIFY_API_ENDPOINT, '/users/' . $user . '/playlists/' . $playlist . '/tracks', 'json', NULL);
+        $data = $this->request('GET', SPOTIFY_API_ENDPOINT, '/users/' . $user . '/playlists/' . $playlist . '/tracks&offset=' . $offset, 'json', NULL);
         return $data;
     }
     
