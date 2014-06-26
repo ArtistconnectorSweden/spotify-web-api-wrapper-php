@@ -55,7 +55,7 @@ class Spotify {
     
     public function refreshToken($refreshToken) {
         $code = $_GET['code']; // Get the code
-        $state = isset($_GET['state']) ? $_GET['state'] : NULL;// Get the code
+        $state = $_GET['state']; // Get the state
         $error = isset($_GET['error']) ? $_GET['error'] : NULL;
         if ($error) {
             throw new Exception (urldecode($error));
@@ -107,9 +107,9 @@ class Spotify {
     /**
      * Search
      */
-    public function search($q, $type,  $limit = 10, $offset = 0) {
-        $data = $this->request('GET', SPOTIFY_API_ENDPOINT, '/search?q=' . urlencode($q) . '&' . ($type ? 'type=' . implode(',', $type) : '') . 'limit=' . $limit . '&offset=' . $offset);
-        
+    public function search($q, $type,  $limit = 10, $offset = 10) {
+        $data = $this->request('GET', SPOTIFY_API_ENDPOINT, '/search?q=' . urlencode($q) . '&type=' . $type . '&limit=' . $limit . '&offest=' . $offset);
+        return $data;
     }
     public function me() {
        
@@ -141,6 +141,7 @@ class Spotify {
      * @param {String} $name The title
      * @param {Boolean} $public denotates if public
      * @param {Array} $tracks An array of spotify uris (optional)
+     * @note The generated playlist will be returned with empty trackset although tracks has been set.
      */
     public function createPlaylist($name, $public,  $tracks = NULL) {
 
@@ -149,10 +150,11 @@ class Spotify {
       
         if ($tracks) {
             // If we have tracks add tracks aswell
-            $uri = 'spotify:user:' . $this->username . ':playlist:' . $data['id'];
-            $data = $this->addTracksToPlaylist($uri, $tracks);
+            $uri = $data['uri'];
+           $this->addTracksToPlaylist($uri, $tracks);
         } else {
         }
+        
         return $data;
         
         // Get the data and add songs
@@ -176,11 +178,11 @@ class Spotify {
      * @param {String} $uri The Spotify URI to the playlist
      * @return Array an array of tracks
      */
-    public function getTracksInPlaylist($uri, $offset = 0) {
+    public function getTracksInPlaylist($uri) {
         $parts = explode(':', $uri);
         $user = $parts[2];
         $playlist = $parts[4];
-        $data = $this->request('GET', SPOTIFY_API_ENDPOINT, '/users/' . $user . '/playlists/' . $playlist . '/tracks&offset=' . $offset, 'json', NULL);
+        $data = $this->request('GET', SPOTIFY_API_ENDPOINT, '/users/' . $user . '/playlists/' . $playlist . '/tracks', 'json', NULL);
         return $data;
     }
     
@@ -211,6 +213,7 @@ class Spotify {
      * @param {String} $data (Optional) Data sent
      */
     public function request($method, $endpoint, $path, $type='text', $data = array(), $opt_headers = array(), $auth = FALSE) {
+     
         $ch = curl_init();
         $url = $endpoint . $path;
       
@@ -272,7 +275,7 @@ class Spotify {
       
         if ($result < 200 || $result > 299) {
           
-            throw new Exception("Error. Code was " . curl_errno($ch) . ' ' . $result . ' ' . $response);
+            throw new Exception("Error. Code was " . curl_errno($ch) . ' ' . $result . ' ' . $response . ' ' . $url);
         }
         $data = json_decode($response, TRUE);
  
@@ -295,7 +298,7 @@ class Spotify {
      */
     public function requestToken() {
         $code = $_GET['code']; // Get the code
-        $state = isset($_GET['state']) ? $_GET['state'] : NULL; // Get the state
+        $state = $_GET['state']; // Get the state
         $error = isset($_GET['error']) ? $_GET['error'] : NULL;
         if ($error) {
             throw new Exception (urldecode($error));
